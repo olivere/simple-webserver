@@ -8,6 +8,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+
+	"github.com/bradfitz/http2"
 )
 
 var (
@@ -39,6 +41,8 @@ type Server struct {
 	key  string
 
 	logger *log.Logger
+
+	h2 http2.Server
 }
 
 type ServerOption func(*Server) error
@@ -91,20 +95,23 @@ func (s *Server) Start() error {
 		cfg := &tls.Config{
 			Certificates:       []tls.Certificate{cert},
 			InsecureSkipVerify: true, // WARNING: only use for self-signed certs
+			NextProtos:         []string{http2.NextProtoTLS},
 		}
 		lis = tls.NewListener(lis, cfg)
-		srv := http.Server{
+		srv := &http.Server{
 			Addr:    s.addr,
 			Handler: s,
 		}
+		http2.ConfigureServer(srv, &s.h2)
 		s.printf("Listen on %s via TLS", s.addr)
 		return srv.Serve(lis)
 	} else {
 		s.printf("Listen on %s", s.addr)
-		srv := http.Server{
+		srv := &http.Server{
 			Addr:    s.addr,
 			Handler: s,
 		}
+		http2.ConfigureServer(srv, &s.h2)
 		return srv.Serve(lis)
 	}
 }
