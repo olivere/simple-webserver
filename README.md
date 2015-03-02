@@ -20,6 +20,15 @@ Run `./webserver -addr=":8000" -cert=./etc/star.go.crt -key=./etc/star.go.key` t
 
 Run `./webserver -addr=":8000"` to use standard HTTP. Open e.g. `http://127.0.0.1:8000` in your browser.
 
+## Docker
+
+You can use this repository with Docker.
+
+1. `docker build -t simple-webserver .`
+2. `docker run --publish 8000:8000 --name simple-webserver --rm
+   simple-webserver`
+3. `open https://<docker-ip>:8000`
+
 # LICENSE
 
 MIT
