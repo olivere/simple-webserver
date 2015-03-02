@@ -29,6 +29,8 @@ You can use this repository with Docker.
    simple-webserver`
 3. `open https://<docker-ip>:8000`
 
+Run `docker stop simple-webserver` to stop the docker container.
+
 # LICENSE
 
 MIT
